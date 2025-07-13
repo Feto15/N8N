@@ -1,0 +1,462 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "url": "https://facebook-scraper3.p.rapidapi.com/search/pages",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $json['nama fb'] }}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-rapidapi-key"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        80,
+        -60
+      ],
+      "id": "99d5ee29-cb59-4e0c-8097-2d3c1f6af12b",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "url": "https://facebook-scraper3.p.rapidapi.com/profile/posts",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "profile_id",
+              "value": "={{ $json.results[0].facebook_id }}"
+            },
+            {
+              "name": "start_date",
+              "value": "2025-06-27"
+            },
+            {
+              "name": "end_date",
+              "value": "2025-06-30"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "x-rapidapi-key"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        280,
+        -60
+      ],
+      "id": "157e3803-059f-4aca-b450-afcbd97ede0c",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "url": "={{ $('HTTP Request1').item.json.results[0].image.uri }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        500,
+        -60
+      ],
+      "id": "830edcdf-dc8a-4694-858d-69235017c8bb",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "resource": "image",
+        "operation": "analyze",
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4o-transcribe",
+          "mode": "list",
+          "cachedResultName": "GPT-4O-TRANSCRIBE"
+        },
+        "text": "baca gambar ini\ndan tulis ulang semua",
+        "inputType": "={{ $json.results[1].image.uri }}",
+        "simplify": false,
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.8,
+      "position": [
+        720,
+        -60
+      ],
+      "id": "7000f843-4206-49fa-8a76-20053fc1bb8b",
+      "name": "OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "zEshMcN5DPeI2zc0",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "16K0m9ya98kkCmg7ouD9gIUUf5Yzxh4oZxiGphp3KVHA",
+          "mode": "list",
+          "cachedResultName": "Konten Scrapping",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16K0m9ya98kkCmg7ouD9gIUUf5Yzxh4oZxiGphp3KVHA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16K0m9ya98kkCmg7ouD9gIUUf5Yzxh4oZxiGphp3KVHA/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Deskripsi": "={{ $json.choices[0].message.content }}"
+          },
+          "matchingColumns": [
+            "Deskripsi"
+          ],
+          "schema": [
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Upload",
+              "displayName": "Upload",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Caption",
+              "displayName": "Caption",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Deskripsi",
+              "displayName": "Deskripsi",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Job link",
+              "displayName": "Job link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        960,
+        -60
+      ],
+      "id": "ce01a800-3b7e-4d89-a142-88a37c872542",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "GvpTo62yIH5gDdd3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "formTitle": "Facebook Scraper",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "nama fb",
+              "placeholder": "jogjalowker"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.2,
+      "position": [
+        -160,
+        -60
+      ],
+      "id": "0a3dac68-eed1-42d4-a0a4-2428a18e0454",
+      "name": "On form submission",
+      "webhookId": "74d23c7b-b1d7-4a17-b7f4-09853718ffe4"
+    }
+  ],
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "OpenAI",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {
+    "HTTP Request1": [
+      {
+        "results": [
+          {
+            "post_id": "1297159575742615",
+            "type": "post",
+            "url": "https://www.facebook.com/jogjalowker.co.id/posts/pfbid02qixjLQLJgRKUwVoUknfhAn7auXmTTvuVweFtqFjiB4vTLTwtCjydjToV4RcU4Q4sl",
+            "message": "Info loker Jogja terbaru hari ini untuk posisi:\n\nGURU PAUD \n\nShare & ajak temenmu untuk bekerja 😁\n\nDownload aplikasi mobile Jogjalowker di Play Store / App Store untuk akses lebih mudah dan cepat (link di bio) 😍\n\n#jogjalowker #loker #lowongankerjajogja\n#lokerjogja #lokersleman #lokerbantul #lokeryogyakarta #lokergunungkidul #lokerkulonprogo #lokerjogjaterbaru #jobfaireveryday",
+            "timestamp": 1751092573,
+            "comments_count": 0,
+            "reactions_count": 1,
+            "reshare_count": 0,
+            "reactions": {
+              "angry": 0,
+              "care": 0,
+              "haha": 0,
+              "like": 1,
+              "love": 0,
+              "sad": 0,
+              "wow": 0
+            },
+            "author": {
+              "id": "100063457546097",
+              "name": "Jogjalowker",
+              "url": "https://www.facebook.com/jogjalowker.co.id",
+              "profile_picture_url": "https://scontent.fsgn8-3.fna.fbcdn.net/v/t39.30808-1/305220214_513557867436127_3815292140589793575_n.png?stp=cp0_dst-png_s40x40&_nc_cat=110&ccb=1-7&_nc_sid=2d3e12&_nc_ohc=CnSMF9aO7m8Q7kNvwHHoyka&_nc_oc=AdlBhkN7uqTaAb0-SNxRyBedsKwwo9RXoI20SWpHQO2gz1J5ljUxEPpKLHwuMfMRZVQ&_nc_zt=24&_nc_ht=scontent.fsgn8-3.fna&_nc_gid=6uDVRaq3M1BNyAYodNCr6g&oh=00_AfPCczDBJZfZHwRSECUSEcVP0wUsZ-r42vOcek9s6if8sQ&oe=6867445C"
+            },
+            "image": {
+              "uri": "https://scontent.fsgn8-3.fna.fbcdn.net/v/t51.75761-15/514015470_18494680423071432_2180043489261465615_n.jpg?stp=dst-jpg_s640x640_tt6&_nc_cat=109&ccb=1-7&_nc_sid=127cfc&_nc_ohc=KNdpn4FM6ksQ7kNvwFvxIVo&_nc_oc=Adnzg5jbVw52bkAg0fQ2K4D4i5UPKb5MS91KLAXnyOtpQuIVYZEfPircSks6Zv9Omio&_nc_zt=23&_nc_ht=scontent.fsgn8-3.fna&_nc_gid=6uDVRaq3M1BNyAYodNCr6g&oh=00_AfP7xTM4c8U5fUAKwmz5ruq5Dnotfg0Lt6GGo8XAWMC2xQ&oe=6867198E",
+              "height": 640,
+              "width": 516
+            },
+            "video": null,
+            "album_preview": null,
+            "video_files": null,
+            "video_thumbnail": null,
+            "external_url": null,
+            "attached_event": null,
+            "attached_post": null,
+            "attached_post_url": null,
+            "text_format_metadata": null
+          },
+          {
+            "post_id": "1297010072424232",
+            "type": "post",
+            "url": "https://www.facebook.com/jogjalowker.co.id/posts/pfbid02LfrEfEmowEytwhEToPZ1FgMCS98Vjx7bbACuvLA223ggX4QNUTPXeGgo1qKffgMcl",
+            "message": "Info loker Jogja terbaru hari ini untuk posisi:\n\nTEKNISI SISTEM PENDINGIN \n\nShare & ajak temenmu untuk bekerja 😁\n\nDownload aplikasi mobile Jogjalowker di Play Store / App Store untuk akses lebih mudah dan cepat (link di bio) 😍\n\n#jogjalowker #loker #lowongankerjajogja\n#lokerjogja #lokersleman #lokerbantul #lokeryogyakarta #lokergunungkidul #lokerkulonprogo #lokerjogjaterbaru #jobfaireveryday",
+            "timestamp": 1751076754,
+            "comments_count": 0,
+            "reactions_count": 0,
+            "reshare_count": 0,
+            "reactions": {
+              "angry": 0,
+              "care": 0,
+              "haha": 0,
+              "like": 0,
+              "love": 0,
+              "sad": 0,
+              "wow": 0
+            },
+            "author": {
+              "id": "100063457546097",
+              "name": "Jogjalowker",
+              "url": "https://www.facebook.com/jogjalowker.co.id",
+              "profile_picture_url": "https://scontent.fsgn8-3.fna.fbcdn.net/v/t39.30808-1/305220214_513557867436127_3815292140589793575_n.png?stp=cp0_dst-png_s40x40&_nc_cat=110&ccb=1-7&_nc_sid=2d3e12&_nc_ohc=CnSMF9aO7m8Q7kNvwHHoyka&_nc_oc=AdlBhkN7uqTaAb0-SNxRyBedsKwwo9RXoI20SWpHQO2gz1J5ljUxEPpKLHwuMfMRZVQ&_nc_zt=24&_nc_ht=scontent.fsgn8-3.fna&_nc_gid=6uDVRaq3M1BNyAYodNCr6g&oh=00_AfPCczDBJZfZHwRSECUSEcVP0wUsZ-r42vOcek9s6if8sQ&oe=6867445C"
+            },
+            "image": {
+              "uri": "https://scontent.fsgn8-3.fna.fbcdn.net/v/t51.75761-15/504353533_18494654344071432_8073357628002755268_n.jpg?stp=dst-jpg_s640x640_tt6&_nc_cat=104&ccb=1-7&_nc_sid=127cfc&_nc_ohc=pmjVmeQqvxQQ7kNvwGw9hyx&_nc_oc=AdmKFjOEW_kkTQ4GMa3UaxlE2unTUbisQ5SHoRtgTW8WNuSasMAh3OIgG9gRJliA4q8&_nc_zt=23&_nc_ht=scontent.fsgn8-3.fna&_nc_gid=6uDVRaq3M1BNyAYodNCr6g&oh=00_AfNH8l6yxu1nb_xoABVaT5i93BS9KJFCfOX5x5YwaeCM1g&oe=68674CF4",
+              "height": 640,
+              "width": 514
+            },
+            "video": null,
+            "album_preview": null,
+            "video_files": null,
+            "video_thumbnail": null,
+            "external_url": null,
+            "attached_event": null,
+            "attached_post": null,
+            "attached_post_url": null,
+            "text_format_metadata": null
+          },
+          {
+            "post_id": "1297009119090994",
+            "type": "post",
+            "url": "https://www.facebook.com/jogjalowker.co.id/posts/pfbid0MLqdE3kcdjSH2Zm6AKMUHQdpn9TTzRp33TPsNGVL1rFo1GbxCpLi6y3CWpTRhGynl",
+            "message": "Info loker Jogja terbaru hari ini untuk posisi:\n\nCREW OUTLET \n\nShare & ajak temenmu untuk bekerja 😁\n\nDownload aplikasi mobile Jogjalowker di Play Store / App Store untuk akses lebih mudah dan cepat (link di bio) 😍\n\n#jogjalowker #loker #lowongankerjajogja\n#lokerjogja #lokersleman #lokerbantul #lokeryogyakarta #lokergunungkidul #lokerkulonprogo #lokerjogjaterbaru #jobfaireveryday",
+            "timestamp": 1751076654,
+            "comments_count": 0,
+            "reactions_count": 0,
+            "reshare_count": 0,
+            "reactions": {
+              "angry": 0,
+              "care": 0,
+              "haha": 0,
+              "like": 0,
+              "love": 0,
+              "sad": 0,
+              "wow": 0
+            },
+            "author": {
+              "id": "100063457546097",
+              "name": "Jogjalowker",
+              "url": "https://www.facebook.com/jogjalowker.co.id",
+              "profile_picture_url": "https://scontent.fsgn8-3.fna.fbcdn.net/v/t39.30808-1/305220214_513557867436127_3815292140589793575_n.png?stp=cp0_dst-png_s40x40&_nc_cat=110&ccb=1-7&_nc_sid=2d3e12&_nc_ohc=CnSMF9aO7m8Q7kNvwHHoyka&_nc_oc=AdlBhkN7uqTaAb0-SNxRyBedsKwwo9RXoI20SWpHQO2gz1J5ljUxEPpKLHwuMfMRZVQ&_nc_zt=24&_nc_ht=scontent.fsgn8-3.fna&_nc_gid=6uDVRaq3M1BNyAYodNCr6g&oh=00_AfPCczDBJZfZHwRSECUSEcVP0wUsZ-r42vOcek9s6if8sQ&oe=6867445C"
+            },
+            "image": {
+              "uri": "https://scontent.fsgn8-3.fna.fbcdn.net/v/t51.75761-15/514016654_18494654254071432_6557029309479760999_n.jpg?stp=dst-jpg_s640x640_tt6&_nc_cat=109&ccb=1-7&_nc_sid=127cfc&_nc_ohc=BubMV8lVTNkQ7kNvwFD5dzj&_nc_oc=Adlk8s71Zlv9djUVLIjdvBvgDgCoXPwEwXKSroBor5tVgOjaDpqi5pMDzEf3Y8fFyxg&_nc_zt=23&_nc_ht=scontent.fsgn8-3.fna&_nc_gid=6uDVRaq3M1BNyAYodNCr6g&oh=00_AfMNNNxKMIRgcv39b5MMjUMGegIfxZi58r_gr5EZgf0eqw&oe=68672805",
+              "height": 640,
+              "width": 514
+            },
+            "video": null,
+            "album_preview": null,
+            "video_files": null,
+            "video_thumbnail": null,
+            "external_url": null,
+            "attached_event": null,
+            "attached_post": null,
+            "attached_post_url": null,
+            "text_format_metadata": null
+          }
+        ],
+        "cursor": "Cg8Ob3JnYW5pY19jdXJzb3IJAAABWkFRSFJEa3dNdzVnOUcySHZlNmJJVkQxcnhqU1A0VGF2bHlPWUMxQ0pkZXFKaHFESWc4a0lRRng3ODVuX1p6SWZIWTY2aHFEdUpNYmR1R0F5bTVuV0d0S0pIRUw2bW8xVWs1YnlmdlhiWjEySG1zRzVUdjB4a3k1eXEyYkRJUl96VlpfVTYzVmhhSDRyQklDWGVuU19fT3lNUnlORnFoZTR3Ty10ODZDRG9wV0pPSjk2UzFNZU9EVENVUk1sWHJ0MkR3dEt5VDYyUHZzcmVGUmR5UFVnTDJBY21CSkZnNVZqOUVIa0JIN3Jaa0hKcWlxUm5JWnlNZlYwX0VPaE9wTm9raGJrLVBxenZBV1JSajA1c1NNeHN1LUlQY01adml1ZXJZQjg3eUw4TnhTeFFkUWN4b3M0bUEtOTNYRjh6TVIwd0pZVXJnSWpfS0RLOXk0U25mbjRrNlhsbHcPCWFkX2N1cnNvcg4PD2dsb2JhbF9wb3NpdGlvbgIADwZvZmZzZXQCAA8QbGFzdF9hZF9wb3NpdGlvbgL/AQ=="
+      }
+    ],
+    "OpenAI": [
+      {
+        "id": "chatcmpl-BnqsEZ8lpQbuxPxcTfBMbGQUhaa7l",
+        "object": "chat.completion",
+        "created": 1751221018,
+        "model": "gpt-4o-mini-2024-07-18",
+        "choices": [
+          {
+            "index": 0,
+            "message": {
+              "role": "assistant",
+              "content": "**DI BUTUHKAN SEGERA**\n\n**GURU PAUD (KB, RA/TK)**\n\n- Perempuan Muslimah (Berjilbab)\n- Berpengalaman lebih diutamakan\n- Pendidikan diutamakan S1 PAUD\n- Memahami tumbuh kembang anak\n- Memiliki kompetensi pedagogik dan berkepribadian\n- Bisa bekerja dengan tim\n\nJika tertarik dan berminat, kirim CV dan foto melalui WA: 0877 3900 0068",
+              "refusal": null,
+              "annotations": []
+            },
+            "logprobs": null,
+            "finish_reason": "stop"
+          }
+        ],
+        "usage": {
+          "prompt_tokens": 25518,
+          "completion_tokens": 108,
+          "total_tokens": 25626,
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "audio_tokens": 0
+          },
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "accepted_prediction_tokens": 0,
+            "rejected_prediction_tokens": 0
+          }
+        },
+        "service_tier": "default",
+        "system_fingerprint": "fp_62a23a81ef"
+      }
+    ]
+  },
+  "meta": {
+    "instanceId": "148517a60186c0032880830df22c76e3037ba474174ae3be75c5e138d595cb30"
+  }
+}
