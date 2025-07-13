@@ -1,0 +1,376 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 0 7-23 * * *"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -200,
+        -25
+      ],
+      "id": "47261b40-e3cd-44bd-b2a2-aec0b42da176",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "16K0m9ya98kkCmg7ouD9gIUUf5Yzxh4oZxiGphp3KVHA",
+          "mode": "list",
+          "cachedResultName": "Konten Scrapping",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16K0m9ya98kkCmg7ouD9gIUUf5Yzxh4oZxiGphp3KVHA/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/16K0m9ya98kkCmg7ouD9gIUUf5Yzxh4oZxiGphp3KVHA/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Status",
+              "lookupValue": "ok"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        20,
+        -20
+      ],
+      "id": "872966cd-27e9-4ea4-8d56-f0f1634d07f0",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "GvpTo62yIH5gDdd3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=ini adalah deskripsi lowongan pekerjaan{{ $json.Deskripsi }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=\"Kamu adalah asisten penulis lowangan pekerjaan. Tugasmu merangkum berita menjadi konten whatsapp\n\nJangan hilangkan point pentingnya\n-nama pekerjaan\n-deskripsi\n\nJangan output sumber berita\njangan ada output ajakan download aplikasi lain\n"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.7,
+      "position": [
+        680,
+        -140
+      ],
+      "id": "f58d784c-2f2e-4e77-adaf-15d9f559fd51",
+      "name": "Basic LLM Chain"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        760,
+        80
+      ],
+      "id": "80b6463e-b611-4ed7-959b-dfd081765b71",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "zEshMcN5DPeI2zc0",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1EsKskxt5poh5YRYOw9gHbOKHYoyyAIkjRCI9nPuo_D4",
+          "mode": "list",
+          "cachedResultName": "Kripto content planing",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1EsKskxt5poh5YRYOw9gHbOKHYoyyAIkjRCI9nPuo_D4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1EsKskxt5poh5YRYOw9gHbOKHYoyyAIkjRCI9nPuo_D4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "row_number": "={{ $('Google Sheets').item.json.row_number }}",
+            "Status": "done"
+          },
+          "matchingColumns": [
+            "row_number"
+          ],
+          "schema": [
+            {
+              "id": "Tanggal",
+              "displayName": "Tanggal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Update",
+              "displayName": "Update",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Summary",
+              "displayName": "Summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Headline",
+              "displayName": "Headline",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        1460,
+        -200
+      ],
+      "id": "adf46d88-8a59-4684-b691-2840c981a03f",
+      "name": "Google Sheets3",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "GvpTo62yIH5gDdd3",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        460,
+        -25
+      ],
+      "id": "d3b5831c-9a85-4ac7-9c8c-b8d6ddf9f2e2",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a3d98ff1-410a-41b2-9708-d25beea7d57a",
+              "name": "Deskripsi",
+              "value": "={{ $json.Caption + \"\\n\\n\" + $json.Deskripsi }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        -25
+      ],
+      "id": "6a01f98a-b633-4014-afa0-5b429e6330f3",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "chatId": "=2126239552",
+        "text": "={{ $json.text }}",
+        "additionalFields": {
+          "appendAttribution": false,
+          "parse_mode": "HTML"
+        }
+      },
+      "id": "063f6ce9-5495-4e5b-a6e8-9ecbc3cf1060",
+      "name": "Telegram1",
+      "type": "n8n-nodes-base.telegram",
+      "position": [
+        1140,
+        100
+      ],
+      "typeVersion": 1.1,
+      "webhookId": "4951d0a3-b2a2-4ae4-aa3b-a3192e879d92",
+      "credentials": {
+        "telegramApi": {
+          "id": "bO28BJaRz0MvyWRt",
+          "name": "Telegram account Img"
+        }
+      },
+      "onError": "continueErrorOutput"
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram1": {
+      "main": [
+        [
+          {
+            "node": "Google Sheets3",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "148517a60186c0032880830df22c76e3037ba474174ae3be75c5e138d595cb30"
+  }
+}
